@@ -1,0 +1,46 @@
+﻿@page "/"
+@using BlazorDragAndDrop.Shared
+
+<h1>Hello, world!</h1>
+
+<TaskContainer Tasks="Tasks" OnStatusChange="HandleStatusUpdated">
+    <TaskList ListStatus="TaskStatuses.Todo" AllowedStatuses="@(new TaskStatuses[] { TaskStatuses.Started })"/>
+    <TaskList ListStatus="TaskStatuses.Started" AllowedStatuses="@(new TaskStatuses[] { TaskStatuses.Todo })"/>
+    <TaskList ListStatus="TaskStatuses.Completed" AllowedStatuses="@(new TaskStatuses[] { TaskStatuses.Started })"/>
+</TaskContainer>
+
+<hr />
+
+<p>Last Updated Task: <strong>@lastUpdatedTask</strong></p>
+
+<hr />
+
+@foreach(var t in Tasks)
+{
+    <p>@t.Detail - <strong>@t.Status</strong></p>
+}
+
+@code{
+    List<TaskModel> Tasks = new List<TaskModel>();
+    string lastUpdatedTask = "";
+
+    protected override void OnInitialized()
+    {
+        for(int i=1; i <= 5; i++)
+        {
+            Tasks.Add(new TaskModel
+            {
+                ID = i,
+                Detail = "Assignment" + i,
+                Status = TaskStatuses.Todo,
+                UpdatedTime = DateTime.Now
+            });
+        }
+    }
+
+    void HandleStatusUpdated(TaskModel updatedTask)
+    {
+        lastUpdatedTask = updatedTask.Detail;
+    }
+
+}

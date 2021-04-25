@@ -1,0 +1,18 @@
+﻿@using BlazorDragAndDrop.Shared
+
+<h3>Task</h3>
+
+<li class="draggable" draggable="true" title="@TaskModel.Detail" @ondragstart="@(()=> HandleDragStart(TaskModel))">
+    <p class="description">@TaskModel.Detail</p>
+    <p class="last-updated">Updated: @TaskModel.UpdatedTime.ToString("HH:mm:ss tt")</p>
+</li>
+
+@code {
+    [CascadingParameter] TaskContainer Container { get; set; }
+    [Parameter] public TaskModel TaskModel { get; set; }
+
+    private void HandleDragStart(TaskModel selectedTask)
+    {
+        Container.Workload = selectedTask;
+    }
+}

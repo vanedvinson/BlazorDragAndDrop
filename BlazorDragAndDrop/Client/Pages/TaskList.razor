@@ -1,0 +1,58 @@
+﻿@using BlazorDragAndDrop.Shared
+
+<h3>@ListStatus (@Tasks.Count())</h3>
+
+<ul class="dropzone @dropClass"
+    ondragover="event.preventDefault()"
+    ondragstart="event.dataTransfer.setData('', event.target.id);"
+    @ondrop="HandleDrop"
+    @ondragenter="HandleDragEnter"
+    @ondragleave="HandleDragLeave">
+
+    @foreach(var ass in Tasks)
+    {
+        <Assignment TaskModel="ass"/>
+    }
+
+</ul>
+
+@code {
+    [CascadingParameter] TaskContainer Container { get; set; }
+    [Parameter] public TaskStatuses ListStatus { get; set; }
+    [Parameter] public TaskStatuses[] AllowedStatuses { get; set; }
+
+    List<TaskModel> Tasks = new List<TaskModel>();
+    string dropClass = "";
+
+    protected override void OnParametersSet()
+    {
+        Tasks.Clear();
+        Tasks.AddRange(Container.Tasks.Where(x => x.Status == ListStatus));
+    }
+
+    private void HandleDragEnter()
+    {
+        if (ListStatus == Container.Workload.Status) return;
+
+        if (AllowedStatuses != null && !AllowedStatuses.Contains(Container.Workload.Status))
+        {
+            dropClass = "no-drop";
+        }
+        else
+        {
+            dropClass = "can-drop";
+        }
+    }
+
+    private void HandleDragLeave()
+    {
+        dropClass = "";
+    }
+
+    private async Task HandleDrop()
+    {
+        dropClass = "";
+        if (AllowedStatuses != null && !AllowedStatuses.Contains(Container.Workload.Status)) return;
+        await Container.UpdateTaskAsync(ListStatus);
+    }
+}

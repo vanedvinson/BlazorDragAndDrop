@@ -1,0 +1,28 @@
+﻿@using BlazorDragAndDrop.Shared
+<h3>TaskContainer</h3>
+
+<div class="tasks-container">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter] public List<TaskModel> Tasks { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public EventCallback<TaskModel> OnStatusChange { get; set; }
+
+    public TaskModel Workload { get; set; }
+
+    public async Task UpdateTaskAsync(TaskStatuses newStatus)
+    {
+        var task = Tasks.SingleOrDefault(x => x.ID == Workload.ID);
+
+        if (task != null)
+        {
+            task.Status = newStatus;
+            task.UpdatedTime = DateTime.Now;
+            await OnStatusChange.InvokeAsync(Workload);
+        }
+    }
+}
