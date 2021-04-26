@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorDragAndDrop.Server
 {
@@ -22,7 +23,7 @@ namespace BlazorDragAndDrop.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddDbContext<DB>(o => o.UseNpgsql(Configuration.GetConnectionString("database")));
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
