@@ -1,0 +1,16 @@
+﻿syntax="proto3";
+option csharp_namespace="grpcProto";
+
+service grpcA {
+	rpc Reg (RegistrationMsg) returns (ResultMsg);
+}
+
+message RegistrationMsg {
+	string Name = 1;
+	string Pass = 2;
+}
+
+message ResultMsg {
+	bool Success = 1;
+	string Error = 2;
+}
